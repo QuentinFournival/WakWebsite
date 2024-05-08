@@ -2,7 +2,7 @@
 
 ## Description
 
-This project are make for technical front-end test.
+This project are make for Wak Website.
 
 The project uses:
 
