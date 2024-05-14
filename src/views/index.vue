@@ -1,15 +1,12 @@
 <template>
-    <div class="height">
-        <ArticleList />
+    <div>
+        <Construction />
     </div>
 </template>
 
 <script setup lang="ts">
-import ArticleList from "../components/articleList.vue";
-</script>
+import Construction from "../components/construction.vue";
+import { useArticlesStore } from "../stores/articlesStore";
 
-<style scoped>
-.height {
-    height: 100% !important;
-}
-</style>
+const { articles } = useArticlesStore();
+</script>

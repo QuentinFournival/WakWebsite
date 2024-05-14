@@ -69,4 +69,65 @@ import { RouterView } from "vue-router";
     .ant-table-column-sorter {
     color: white;
 }
+tr {
+    background: $color-side;
+    color: white;
+
+    &:nth-child(odd) {
+        background: $color-titre-avatar;
+    }
+}
+
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-tbody
+    > tr.ant-table-row:hover
+    > td,
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-tbody
+    > tr
+    > td.ant-table-cell-row-hover {
+    background: none;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    td.ant-table-column-sort {
+    background: transparent;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-menu-dark.ant-menu-horizontal
+    > .ant-menu-item-selected,
+:where(.css-dev-only-do-not-override-16pw25h).ant-menu-dark.ant-menu-horizontal
+    > .ant-menu-submenu-selected {
+    background: none;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-menu .ant-menu-item a {
+    color: white !important;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-menu-dark {
+    color: white;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-tabs {
+    color: white;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-tabs
+    .ant-tabs-tab.ant-tabs-tab-active
+    .ant-tabs-tab-btn {
+    color: white;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-tabs .ant-tabs-ink-bar {
+    background: white;
+}
+:where(.css-dev-only-do-not-override-16pw25h)[class^="ant-table"]
+    [class^="ant-table"],
+:where(.css-dev-only-do-not-override-16pw25h)[class*=" ant-table"]
+    [class^="ant-table"],
+:where(.css-dev-only-do-not-override-16pw25h)[class^="ant-table"]
+    [class*=" ant-table"],
+:where(.css-dev-only-do-not-override-16pw25h)[class*=" ant-table"]
+    [class*=" ant-table"] {
+    overflow: auto;
+    max-height: 65vh;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-pagination.ant-pagination {
+    overflow: inherit;
+}
 </style>

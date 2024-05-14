@@ -17,9 +17,17 @@
                     width: '70%',
                 }"
             >
-                <a-menu-item key="1">Acceuil</a-menu-item>
-                <a-menu-item key="2">Shop</a-menu-item>
-                <a-menu-item key="3">Laderboard</a-menu-item>
+                <a-menu-item @click="router.push('/')" key="1"
+                    >Acceuil</a-menu-item
+                >
+                <a-menu-item key="2"
+                    ><a href="https://wakshop.tebex.io/" target="_blank"
+                        >Shop</a
+                    ></a-menu-item
+                >
+                <a-menu-item @click="router.push('/leaderboard')" key="3"
+                    >Leaderboard</a-menu-item
+                >
                 <a-menu-item
                     ><a-dropdown>
                         <a class="ant-dropdown-link" @click.prevent>
@@ -29,12 +37,12 @@
                         <template #overlay>
                             <a-menu>
                                 <a-menu-item>
-                                    <a href="javascript:;"
+                                    <a href="/"
                                         >2 man Wak Server (start 24 mai)</a
                                     >
                                 </a-menu-item>
                                 <a-menu-item>
-                                    <a href="javascript:;"
+                                    <a href="/"
                                         >4 man Wak Server (start 10 mai)</a
                                     >
                                 </a-menu-item>
@@ -44,11 +52,16 @@
                 </a-menu-item>
             </a-menu>
             <div class="container">
-                <a-button class="buttonStyle" shape="round" :size="size">
+                <a-button
+                    class="buttonStyle"
+                    shape="round"
+                    @click="copyClipboard()"
+                    :size="size"
+                >
                     <template #icon>
                         <CopyOutlined />
                     </template>
-                    45.65.114.217
+                    83.147.29.33
                 </a-button>
                 <a-button class="buttonStyle button" shape="round" :size="size">
                     <template #icon>
@@ -58,88 +71,74 @@
                 </a-button>
             </div>
         </a-layout-header>
-        <a-layout-content
-            class="content"
-            :style="{ padding: '20px 50px', marginTop: '80px' }"
-        >
-            <a-table
-                :columns="columns"
-                :data-source="dataSource"
-                @change="onChange"
-            ></a-table>
+        <a-layout-content class="content" :style="{ marginTop: '80px' }">
+            <div class="content">
+                <div class="containerImg">
+                    <img class="logo" :src="WakLogo" alt="wakLogo" />
+                </div>
+                <h1>La page est en cours de construction.</h1>
+            </div>
         </a-layout-content>
     </a-layout>
 </template>
-<script lang="ts" setup>
-import { ref } from "vue";
+
+<script setup lang="ts">
 import WakLogo from "../assets/logo-X_bleu_discord.png";
 import { CopyOutlined } from "@ant-design/icons-vue";
+import { ref } from "vue";
+import router from "../router/index";
 
-import {
-    UserOutlined,
-    LaptopOutlined,
-    NotificationOutlined,
-} from "@ant-design/icons-vue";
-const selectedKeys1 = ref<string[]>(["2"]);
-const selectedKeys2 = ref<string[]>(["1"]);
-const openKeys = ref<string[]>(["sub1"]);
-const dataSource = ref([
-    { rank: 1, tribeName: "Minas Morghul", tribeScore: 33686 },
-    { rank: 2, tribeName: "Tribe of BLACKITO", tribeScore: 23547 },
-    { rank: 3, tribeName: "Mimolette", tribeScore: 23350 },
-    { rank: 4, tribeName: "MERCILESS", tribeScore: 11318 },
-    { rank: 5, tribeName: "KAPRO RUNNER", tribeScore: 8753 },
-    { rank: 6, tribeName: "HERE WE GO AGAIN", tribeScore: 7590 },
-    { rank: 7, tribeName: "E.O.D", tribeScore: 4521 },
-    { rank: 8, tribeName: "Tribe of SALMON", tribeScore: 3528 },
-    { rank: 9, tribeName: "Tribu de HKA", tribeScore: 2766 },
-    { rank: 10, tribeName: "LA GRANDE VADROUILLE", tribeScore: 1238 },
-    { rank: 11, tribeName: "IZI PIZI", tribeScore: 1029 },
-    { rank: 12, tribeName: "Beer Barrel", tribeScore: 1007 },
-    { rank: 13, tribeName: "dont cry baby", tribeScore: 235 },
-    { rank: 14, tribeName: "A D M I N", tribeScore: 114 },
-    { rank: 15, tribeName: "GRX", tribeScore: 48 },
-    { rank: 16, tribeName: "Tribu de B A N B I N O S", tribeScore: 41 },
-    { rank: 17, tribeName: "only clap", tribeScore: 36 },
-    { rank: 18, tribeName: "revenge", tribeScore: 16 },
-    { rank: 19, tribeName: "Ortega", tribeScore: 10 },
-    { rank: 20, tribeName: "Team Licorn", tribeScore: 3 },
-]);
+const ipServer = ref("83.147.29.33");
 
-const columns = [
-    {
-        title: "Rank",
-        dataIndex: "rank",
-        sorter: (a, b) => a.rank - b.rank,
-    },
-    {
-        title: "Tribe name ",
-        dataIndex: "tribeName",
-        sorter: {
-            compare: (a, b) => a.tribeName.length - b.tribeName.length,
-            multiple: 2,
-        },
-    },
-    {
-        title: "Tribe score",
-        dataIndex: "tribeScore",
-        sorter: {
-            compare: (a, b) => a.tribeScore - b.tribeScore,
-            multiple: 2,
-        },
-    },
-];
-function onChange(pagination, filters, sorter, extra) {
-    console.log("params", pagination, filters, sorter, extra);
-}
+const copyClipboard = () => {
+    navigator.clipboard.writeText(ipServer.value);
+
+    // Alert the copied text
+    alert("Copied the text: " + ipServer.value);
+};
 </script>
+
 <style lang="scss" scoped>
 @import "../assets/variables/variables.scss";
+
+.content {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background: $bg;
+}
+.containerImg {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    .logo {
+        width: 300px;
+        height: 300px;
+    }
+}
+h1 {
+    color: white;
+    font-size: 3rem;
+    margin-top: -30rem;
+}
 
 .logo {
     width: 60px;
     height: 60px;
     object-fit: content;
+    margin-top: 10px;
+}
+.datatable {
+    width: 100%;
+}
+h1 {
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
 }
 .header {
     display: flex;
@@ -163,7 +162,7 @@ function onChange(pagination, filters, sorter, extra) {
     }
 }
 .ant-menu-item-selected {
-    background: $color-text !important;
+    background: $color-side !important;
 }
 .ant-row-rtl #components-layout-demo-top-side-2 .logo {
     float: right;
@@ -179,10 +178,6 @@ function onChange(pagination, filters, sorter, extra) {
 .height {
     height: 100% !important;
 }
-.content {
-    margin-top: 1rem;
-    background: $bg;
-}
 
 .container {
     display: flex;
@@ -192,15 +187,25 @@ function onChange(pagination, filters, sorter, extra) {
     justify-content: flex-end;
     width: 20%;
 }
-.containerLogo {
-    padding-top: 10px;
-    width: 10%;
-    .buttonStyle {
-        background: transparent !important;
-    }
-}
+
 :where(.css-dev-only-do-not-override-16pw25h).ant-btn-default {
     background: transparent !important;
     color: white;
 }
+
+:where(.css-dev-only-do-not-override-16pw25h) a {
+    color: black !important;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-btn-default:not(
+        :disabled
+    ):hover {
+    color: white;
+    border-color: white;
+}
 </style>
+
+<script lang="ts">
+export default {
+    name: "Construction",
+};
+</script>
