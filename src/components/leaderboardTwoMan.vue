@@ -75,39 +75,35 @@
             class="content"
             :style="{ padding: '20px 50px', marginTop: '80px' }"
         >
-            <img class="backgroundLeader" :src="background" alt="" />
-            <div class="imgContent">
-                <img class="leaderBoard" :src="leaderBoard" alt="" />
-
-                <a-tabs class="datatable" v-model:activeKey="activeKey">
-                    <a-tab-pane key="1" tab="Tributs">
-                        <a-input
-                            class="inputSearch"
-                            v-model:value="search"
-                            placeholder="Recherche tribu" />
-                        <a-table
-                            class="datatable"
-                            :columns="columnsTribut"
-                            :data-source="searchTribu"
-                            @change="onChange"
-                        ></a-table
-                    ></a-tab-pane>
-                    <a-tab-pane key="2" tab="Players" force-render>
-                        <a-input
-                            class="inputSearch"
-                            v-model:value="searchPlayer"
-                            placeholder="Recherche Joueur" />
-                        <a-table
-                            class="datatable"
-                            :columns="
-                                myBoolean ? columnsPlayerAdmin : columnsPlayer
-                            "
-                            :data-source="searchPlayers"
-                            @change="onChange"
-                        ></a-table
-                    ></a-tab-pane>
-                </a-tabs>
-            </div>
+            <h1>Leaderboard</h1>
+            <a-tabs class="datatable" v-model:activeKey="activeKey">
+                <a-tab-pane key="1" tab="Tributs">
+                    <a-input
+                        class="inputSearch"
+                        v-model:value="search"
+                        placeholder="Recherche tribu" />
+                    <a-table
+                        class="datatable"
+                        :columns="columnsTribut"
+                        :data-source="searchTribu"
+                        @change="onChange"
+                    ></a-table
+                ></a-tab-pane>
+                <a-tab-pane key="2" tab="Players" force-render>
+                    <a-input
+                        class="inputSearch"
+                        v-model:value="searchPlayer"
+                        placeholder="Recherche Joueur" />
+                    <a-table
+                        class="datatable"
+                        :columns="
+                            myBoolean ? columnsPlayerAdmin : columnsPlayer
+                        "
+                        :data-source="searchPlayers"
+                        @change="onChange"
+                    ></a-table
+                ></a-tab-pane>
+            </a-tabs>
         </a-layout-content>
     </a-layout>
 </template>
@@ -124,9 +120,6 @@ import WakLogo from "../assets/logo-X_bleu_discord.png";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import router from "../router/index";
 import axios from "axios";
-import leaderBoard from "../assets/leaderBoard.png";
-import background from "../assets/backgroundLeaderboard.svg";
-
 import {
     UserOutlined,
     LaptopOutlined,
@@ -146,7 +139,7 @@ const playerStats = ref([]);
 const fetchLeaderboards = async () => {
     try {
         const response = await axios.get(
-            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/leaderboards"
+            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/leaderboardsTwoMan"
         );
         const data = await response.data.sort(
             (a, b) => b.DamageScore - a.DamageScore
@@ -170,7 +163,7 @@ const fetchLeaderboards = async () => {
 const fetchPlayerStats = async () => {
     try {
         const response = await axios.get(
-            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/playerStats"
+            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/playerStatsTwoMan"
         );
         const data = await response.data.sort(
             (a, b) => b.PlayerKills - a.PlayerKills
@@ -395,39 +388,14 @@ onBeforeUnmount(() => {
 </script>
 <style lang="scss" scoped>
 @import "../assets/variables/variables.scss";
-.imgContent {
-    position: relative;
-    top: 50%;
-    width: 1920px;
-    height: 1080px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.leaderBoard {
-    width: 1520px;
-    height: 880px;
-    position: absolute;
-    transform: translate(0%, 10%);
-    top: 0px;
-}
-.backgroundLeader {
-    width: 100%;
-    height: 100vh;
-    left: 0;
-    position: absolute;
-    top: 0px;
-}
+
 .logo {
     width: 60px;
     height: 60px;
     object-fit: content;
 }
 .datatable {
-    width: 82.5%;
-    margin: 0 auto;
+    width: 100%;
 }
 
 h1 {
@@ -440,30 +408,13 @@ h1 {
         :disabled
     ):hover {
     color: white;
-    border-color: transparent;
+    border-color: white;
 }
-
 .inputSearch {
     width: 20%;
     position: absolute;
     right: 0;
     top: -50px;
-}
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-thead
-    > tr
-    > th,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-tbody
-    > tr
-    > td,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper tfoot > tr > th,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    tfoot
-    > tr
-    > td {
-    padding: 14.7px 16px !important;
-    font-size: 20px !important;
 }
 .header {
     display: flex;
@@ -499,14 +450,14 @@ h1 {
     opacity: 0.7;
 }
 .site-layout-background {
-    background: transparent;
+    background: #fff;
 }
 .height {
     height: 100% !important;
 }
 .content {
     margin-top: 1rem;
-    position: relative;
+    background: $bg;
 }
 .button {
     color: black !important;
@@ -536,40 +487,18 @@ h1 {
 tr {
     background: $color-side;
     color: white;
-    font-size: 20px !important;
-    padding: 14.7px 13px !important;
-    color: black !important;
-    height: auto !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
     &:nth-child(1) {
-        background: transparent !important;
+        background: #077869 !important;
     }
     &:nth-child(2) {
-        background: transparent !important;
+        background: #077869b2 !important;
     }
     &:nth-child(3) {
-        background: transparent !important;
+        background: #07786965 !important;
     }
     &:nth-child(odd) {
-        background: transparent !important;
+        background: $color-titre-avatar;
     }
-}
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-thead
-    > tr
-    > th:not(:last-child):not(.ant-table-selection-column):not(
-        .ant-table-row-expand-icon-cell
-    ):not([colspan])::before,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-thead
-    > tr
-    > td:not(:last-child):not(.ant-table-selection-column):not(
-        .ant-table-row-expand-icon-cell
-    ):not([colspan])::before {
-    display: none !important;
 }
 :where(.css-16pw25h) a {
     color: black !important;
@@ -578,6 +507,6 @@ tr {
 
 <script lang="ts">
 export default {
-    name: "Leaderboard",
+    name: "LeaderboardTwoMan",
 };
 </script>

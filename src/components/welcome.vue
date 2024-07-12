@@ -75,6 +75,7 @@
                 <h1>La page est en cours de construction.</h1>
             </div>
         </a-layout-content>
+        <a-back-top />
     </a-layout>
 </template>
 

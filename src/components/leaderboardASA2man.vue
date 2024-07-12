@@ -75,39 +75,37 @@
             class="content"
             :style="{ padding: '20px 50px', marginTop: '80px' }"
         >
-            <img class="backgroundLeader" :src="background" alt="" />
-            <div class="imgContent">
-                <img class="leaderBoard" :src="leaderBoard" alt="" />
+            <h1>Leaderboard</h1>
 
-                <a-tabs class="datatable" v-model:activeKey="activeKey">
-                    <a-tab-pane key="1" tab="Tributs">
-                        <a-input
-                            class="inputSearch"
-                            v-model:value="search"
-                            placeholder="Recherche tribu" />
-                        <a-table
-                            class="datatable"
-                            :columns="columnsTribut"
-                            :data-source="searchTribu"
-                            @change="onChange"
-                        ></a-table
-                    ></a-tab-pane>
-                    <a-tab-pane key="2" tab="Players" force-render>
-                        <a-input
-                            class="inputSearch"
-                            v-model:value="searchPlayer"
-                            placeholder="Recherche Joueur" />
-                        <a-table
-                            class="datatable"
-                            :columns="
-                                myBoolean ? columnsPlayerAdmin : columnsPlayer
-                            "
-                            :data-source="searchPlayers"
-                            @change="onChange"
-                        ></a-table
-                    ></a-tab-pane>
-                </a-tabs>
-            </div>
+            <a-tabs class="datatable" v-model:activeKey="activeKey">
+                <a-tab-pane key="1" tab="Tributs">
+                    <a-input
+                        class="inputSearchTribut"
+                        v-model:value="search"
+                        placeholder="Recherche tribut" />
+                    <a-table
+                        class="datatable"
+                        :columns="columnsTribut"
+                        :data-source="tribeData"
+                        @change="onChange"
+                    ></a-table
+                ></a-tab-pane>
+                <a-tab-pane key="2" tab="Players" force-render>
+                    <a-input
+                        class="inputSearch"
+                        v-model:value="searchPlayer"
+                        placeholder="Recherche Joueur"
+                    />
+                    <a-table
+                        class="datatable"
+                        :columns="
+                            myBoolean ? columnsPlayerAdmin : columnsPlayer
+                        "
+                        :data-source="searchPlayers"
+                        @change="onChange"
+                    ></a-table>
+                </a-tab-pane>
+            </a-tabs>
         </a-layout-content>
     </a-layout>
 </template>
@@ -124,9 +122,6 @@ import WakLogo from "../assets/logo-X_bleu_discord.png";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import router from "../router/index";
 import axios from "axios";
-import leaderBoard from "../assets/leaderBoard.png";
-import background from "../assets/backgroundLeaderboard.svg";
-
 import {
     UserOutlined,
     LaptopOutlined,
@@ -135,61 +130,61 @@ import {
 const selectedKeys1 = ref<string[]>(["2"]);
 const selectedKeys2 = ref<string[]>(["1"]);
 const openKeys = ref<string[]>(["sub1"]);
-const search = ref("");
 const searchPlayer = ref("");
+const search = ref("");
 const ipServer = ref("83.147.29.33");
 const adminColumns = ref(false);
-
-const leaderboards = ref([]);
 const playerStats = ref([]);
+const tribeArray = ref([]);
 
-const fetchLeaderboards = async () => {
-    try {
-        const response = await axios.get(
-            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/leaderboards"
-        );
-        const data = await response.data.sort(
-            (a, b) => b.DamageScore - a.DamageScore
-        );
-        const tribe = data.map((tribe, index) => {
-            return {
-                rank: index + 1,
-                ...tribe,
-            };
-        });
-        leaderboards.value = tribe;
-    } catch (error) {
-        console.error(
-            "Erreur lors de la récupération des leaderboards :",
-            error
-        );
-    }
-};
-
-// Fonction pour récupérer les statistiques des joueurs depuis l'API
 const fetchPlayerStats = async () => {
     try {
         const response = await axios.get(
-            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/playerStats"
+            "https://stellular-youtiao-51b76b.netlify.app/.netlify/functions/api/leaderboardASA2man"
         );
         const data = await response.data.sort(
-            (a, b) => b.PlayerKills - a.PlayerKills
+            (a, b) => b.PlayerDamage - a.PlayerDamage
         );
         const players = data.map((player, index) => {
-            const timePlayed = player.PlayTime / 60;
+            const timePlayed = player.MinutesPlayed / 60;
             const kda =
-                player.DeathByPlayer > 0
-                    ? player.PlayerKills / player.DeathByPlayer
+                player.PlayerDeaths > 0
+                    ? player.PlayerKills / player.PlayerDeaths
                     : player.PlayerKills;
             return {
                 rank: index + 1,
-                PlayTime: timePlayed + "H",
+                PlayTime: timePlayed.toFixed(2) + "H",
                 KDA: kda.toFixed(2),
                 SteamID: player.SteamID,
                 ...player,
             };
         });
         playerStats.value = players;
+
+        tribeArray.value = players.reduce((acc, player) => {
+            if (player.TribeName === "") {
+                return acc;
+            }
+            let tribe = acc.find((t) => t.tribeName === player.TribeName);
+
+            if (!tribe) {
+                tribe = {
+                    id: acc.length + 1,
+                    tribeName: player.TribeName,
+                    tribePlayers: [],
+                    tribeDamage: 0,
+                };
+                acc.push(tribe);
+            }
+
+            tribe.tribePlayers.push(` ${player.Name} `);
+
+            tribe.tribeDamage += player.PlayerDamage;
+
+            return acc;
+        }, []);
+
+        tribeArray.value.sort((a, b) => b.tribeDamage - a.tribeDamage);
     } catch (error) {
         console.error(
             "Erreur lors de la récupération des statistiques des joueurs :",
@@ -197,50 +192,57 @@ const fetchPlayerStats = async () => {
         );
     }
 };
-const searchTribu = computed(() =>
-    leaderboards.value.filter((tribu) => {
-        return tribu.TribeName.toLowerCase().includes(
-            search.value.toLowerCase()
+
+const searchPlayers = computed(() =>
+    playerStats.value.filter((player) => {
+        return player.Name.toLowerCase().includes(
+            searchPlayer.value.toLowerCase()
         );
     })
 );
-const searchPlayers = computed(() =>
-    playerStats.value.filter((player) => {
-        return player.PlayerName.toLowerCase().includes(
-            searchPlayer.value.toLowerCase()
-        );
+const tribeData = computed(() =>
+    tribeArray.value.filter((tribe) => {
+        return tribe.tribeName
+            .toLowerCase()
+            .includes(search.value.toLowerCase());
     })
 );
 const copyClipboard = () => {
     navigator.clipboard.writeText(ipServer.value);
 
-    // Alert the copied text
     alert("Copied the text: " + ipServer.value);
 };
 onBeforeMount(async () => {
-    await fetchLeaderboards();
     await fetchPlayerStats();
 });
 
 const columnsTribut = [
     {
         title: "Rank",
-        dataIndex: "rank",
-        sorter: (a, b) => a.rank - b.rank,
+        dataIndex: "id",
+        sorter: (a, b) => a.id - b.id,
     },
     {
         title: "Tribe name ",
-        dataIndex: "TribeName",
+        dataIndex: "tribeName",
         sorter: {
-            compare: (a, b) => a.TribeName.length - b.TribeName.length,
+            compare: (a, b) => a.tribeName.length - b.tribeName.length,
+            multiple: 2,
+        },
+    },
+    {
+        title: "Tribe Players",
+        dataIndex: "tribePlayers",
+        sorter: {
+            compare: (a, b) => a.tribePlayers - b.tribePlayers,
             multiple: 2,
         },
     },
     {
         title: "Damage Score",
-        dataIndex: "DamageScore",
+        dataIndex: "tribeDamage",
         sorter: {
-            compare: (a, b) => a.DamageScore - b.DamageScore,
+            compare: (a, b) => a.tribeDamage - b.tribeDamage,
             multiple: 2,
         },
     },
@@ -254,9 +256,17 @@ const columnsPlayer = [
     },
     {
         title: "Player Name ",
-        dataIndex: "PlayerName",
+        dataIndex: "Name",
         sorter: {
-            compare: (a, b) => a.PlayerName.length - b.PlayerName.length,
+            compare: (a, b) => a.Name.length - b.Name.length,
+            multiple: 2,
+        },
+    },
+    {
+        title: "Player Damage ",
+        dataIndex: "PlayerDamage",
+        sorter: {
+            compare: (a, b) => a.PlayerDamage.length - b.PlayerDamage.length,
             multiple: 2,
         },
     },
@@ -270,9 +280,9 @@ const columnsPlayer = [
     },
     {
         title: "Time played",
-        dataIndex: "PlayTime",
+        dataIndex: "MinutesPlayed",
         sorter: {
-            compare: (a, b) => a.PlayTime - b.PlayTime,
+            compare: (a, b) => a.MinutesPlayed - b.MinutesPlayed,
             multiple: 2,
         },
     },
@@ -286,7 +296,7 @@ const columnsPlayer = [
     },
     {
         title: "Player Death",
-        dataIndex: "DeathByPlayer",
+        dataIndex: "PlayerDeaths",
         sorter: {
             compare: (a, b) => a.DeathByPlayer - b.DeathByPlayer,
             multiple: 2,
@@ -294,7 +304,7 @@ const columnsPlayer = [
     },
     {
         title: "Player KDA",
-        dataIndex: "KDA",
+        dataIndex: "K/D",
         sorter: {
             compare: (a, b) => a.KDA - b.KDA,
             multiple: 2,
@@ -309,15 +319,15 @@ const columnsPlayerAdmin = [
     },
     {
         title: "Player Name ",
-        dataIndex: "PlayerName",
+        dataIndex: "Name",
         sorter: {
             compare: (a, b) => a.PlayerName.length - b.PlayerName.length,
             multiple: 2,
         },
     },
     {
-        title: "Player Steam Id ",
-        dataIndex: "SteamID",
+        title: "Player eos Id ",
+        dataIndex: "eos_id",
         sorter: {
             compare: (a, b) => a.SteamID - b.SteamID,
             multiple: 2,
@@ -333,7 +343,7 @@ const columnsPlayerAdmin = [
     },
     {
         title: "Time played",
-        dataIndex: "PlayTime",
+        dataIndex: "MinutesPlayed",
         sorter: {
             compare: (a, b) => a.PlayTime - b.PlayTime,
             multiple: 2,
@@ -349,7 +359,7 @@ const columnsPlayerAdmin = [
     },
     {
         title: "Player Death",
-        dataIndex: "DeathByPlayer",
+        dataIndex: "PlayerDeaths",
         sorter: {
             compare: (a, b) => a.DeathByPlayer - b.DeathByPlayer,
             multiple: 2,
@@ -357,7 +367,7 @@ const columnsPlayerAdmin = [
     },
     {
         title: "Player KDA",
-        dataIndex: "KDA",
+        dataIndex: "K/D",
         sorter: {
             compare: (a, b) => a.KDA - b.KDA,
             multiple: 2,
@@ -395,39 +405,14 @@ onBeforeUnmount(() => {
 </script>
 <style lang="scss" scoped>
 @import "../assets/variables/variables.scss";
-.imgContent {
-    position: relative;
-    top: 50%;
-    width: 1920px;
-    height: 1080px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.leaderBoard {
-    width: 1520px;
-    height: 880px;
-    position: absolute;
-    transform: translate(0%, 10%);
-    top: 0px;
-}
-.backgroundLeader {
-    width: 100%;
-    height: 100vh;
-    left: 0;
-    position: absolute;
-    top: 0px;
-}
+
 .logo {
     width: 60px;
     height: 60px;
     object-fit: content;
 }
 .datatable {
-    width: 82.5%;
-    margin: 0 auto;
+    width: 100%;
 }
 
 h1 {
@@ -440,30 +425,21 @@ h1 {
         :disabled
     ):hover {
     color: white;
-    border-color: transparent;
+    border-color: white;
 }
-
 .inputSearch {
     width: 20%;
     position: absolute;
     right: 0;
-    top: -50px;
+    top: 120px;
+    margin-right: 3rem;
 }
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-thead
-    > tr
-    > th,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-tbody
-    > tr
-    > td,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper tfoot > tr > th,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    tfoot
-    > tr
-    > td {
-    padding: 14.7px 16px !important;
-    font-size: 20px !important;
+.inputSearchTribut {
+    width: 20%;
+    position: absolute;
+    right: 0;
+    top: -51px;
+    margin-right: 3rem;
 }
 .header {
     display: flex;
@@ -499,14 +475,14 @@ h1 {
     opacity: 0.7;
 }
 .site-layout-background {
-    background: transparent;
+    background: #fff;
 }
 .height {
     height: 100% !important;
 }
 .content {
     margin-top: 1rem;
-    position: relative;
+    background: $bg;
 }
 .button {
     color: black !important;
@@ -536,40 +512,18 @@ h1 {
 tr {
     background: $color-side;
     color: white;
-    font-size: 20px !important;
-    padding: 14.7px 13px !important;
-    color: black !important;
-    height: auto !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
     &:nth-child(1) {
-        background: transparent !important;
+        background: #077869 !important;
     }
     &:nth-child(2) {
-        background: transparent !important;
+        background: #077869b2 !important;
     }
     &:nth-child(3) {
-        background: transparent !important;
+        background: #07786965 !important;
     }
     &:nth-child(odd) {
-        background: transparent !important;
+        background: $color-titre-avatar;
     }
-}
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-thead
-    > tr
-    > th:not(:last-child):not(.ant-table-selection-column):not(
-        .ant-table-row-expand-icon-cell
-    ):not([colspan])::before,
-:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
-    .ant-table-thead
-    > tr
-    > td:not(:last-child):not(.ant-table-selection-column):not(
-        .ant-table-row-expand-icon-cell
-    ):not([colspan])::before {
-    display: none !important;
 }
 :where(.css-16pw25h) a {
     color: black !important;
@@ -578,6 +532,6 @@ tr {
 
 <script lang="ts">
 export default {
-    name: "Leaderboard",
+    name: "LeaderboardTwoMan",
 };
 </script>

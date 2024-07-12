@@ -69,10 +69,34 @@
         </a-layout-header>
         <a-layout-content class="content" :style="{ marginTop: '80px' }">
             <div class="content">
-                <div class="containerImg">
-                    <img class="logo" :src="WakLogo" alt="wakLogo" />
+                <div class="card" @click="router.push('/leaderboard')">
+                    <div class="bg"></div>
+                    <img :src="WakLogo" alt="logo" />
+                    <h2>4man</h2>
                 </div>
-                <h1>La page est en cours de construction.</h1>
+                <div class="card" @click="router.push('/leaderboardTwoMan')">
+                    <div class="bg two"></div>
+                    <img :src="WakLogo" alt="logo" />
+                    <h2>2man</h2>
+                </div>
+                <div class="card" @click="router.push('/leaderboardASA')">
+                    <div class=""></div>
+                    <img
+                        class="img"
+                        src="https://ark.wiki.gg/images/thumb/0/0a/ASA_Logo_transparent.png/630px-ASA_Logo_transparent.png"
+                        alt="logo"
+                    />
+                    <h2>4 man ASA</h2>
+                </div>
+                <div class="card" @click="router.push('/leaderboardASA2man')">
+                    <div class=""></div>
+                    <img
+                        class="img"
+                        src="https://ark.wiki.gg/images/thumb/0/0a/ASA_Logo_transparent.png/630px-ASA_Logo_transparent.png"
+                        alt="logo"
+                    />
+                    <h2>2 man ASA</h2>
+                </div>
             </div>
         </a-layout-content>
     </a-layout>
@@ -103,8 +127,54 @@ const copyClipboard = () => {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
     background: $bg;
+    .card {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        color: white;
+        width: 20%;
+        background: black;
+        margin: 2rem;
+        padding: 2rem;
+        height: 30rem;
+        cursor: pointer;
+        border-radius: 20px;
+        box-shadow: 0px 0px 86px -9px rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s;
+        &:hover {
+            transform: scale(1.04);
+        }
+        .bg {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            transform: rotate(54deg);
+            background: #0b965d;
+            z-index: 1;
+            top: -2rem;
+            left: 10rem;
+        }
+        .two {
+            transform: rotate(-146deg);
+            top: 15.5rem;
+            left: -21rem;
+        }
+        h2 {
+            width: 100%;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 3;
+        }
+        img {
+            width: 80%;
+            height: 60%;
+            object-fit: content;
+            z-index: 3;
+        }
+    }
 }
 .containerImg {
     display: flex;
@@ -135,6 +205,9 @@ h1 {
     text-align: center;
     color: white;
     font-size: 2.5rem;
+}
+.img {
+    object-fit: contain;
 }
 .header {
     display: flex;
