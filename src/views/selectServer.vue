@@ -97,6 +97,15 @@
                     />
                     <h2>2 man ASA</h2>
                 </div>
+                <div class="card" @click="router.push('/leaderboardASANoWipe')">
+                    <div class=""></div>
+                    <img
+                        class="img"
+                        src="https://ark.wiki.gg/images/thumb/0/0a/ASA_Logo_transparent.png/630px-ASA_Logo_transparent.png"
+                        alt="logo"
+                    />
+                    <h2>No Wipe ASA</h2>
+                </div>
             </div>
         </a-layout-content>
     </a-layout>
@@ -123,7 +132,7 @@ const copyClipboard = () => {
 
 .content {
     width: 100%;
-    height: 100vh;
+    height: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -133,7 +142,7 @@ const copyClipboard = () => {
         flex-wrap: wrap;
         justify-content: center;
         color: white;
-        width: 20%;
+        width: 33%;
         background: black;
         margin: 2rem;
         padding: 2rem;
@@ -154,13 +163,13 @@ const copyClipboard = () => {
             transform: rotate(54deg);
             background: #0b965d;
             z-index: 1;
-            top: -2rem;
-            left: 10rem;
+            top: 10rem;
+            left: 4rem;
         }
         .two {
             transform: rotate(-146deg);
-            top: 15.5rem;
-            left: -21rem;
+            top: 12.5rem;
+            left: -26rem;
         }
         h2 {
             width: 100%;
@@ -169,8 +178,8 @@ const copyClipboard = () => {
             z-index: 3;
         }
         img {
-            width: 80%;
-            height: 60%;
+            width: 240px;
+            height: 240px;
             object-fit: content;
             z-index: 3;
         }
@@ -257,19 +266,34 @@ h1 {
     width: 20%;
 }
 
-:where(.css-dev-only-do-not-override-16pw25h).ant-btn-default {
+:where(.css-16pw25h).ant-btn-default {
     background: transparent !important;
     color: white;
 }
 
-:where(.css-dev-only-do-not-override-16pw25h) a {
+:where(.css-16pw25h) a {
     color: black !important;
 }
-:where(.css-dev-only-do-not-override-16pw25h).ant-btn-default:not(
-        :disabled
-    ):hover {
+:where(.css-16pw25h).ant-btn-default:not(:disabled):hover {
     color: white;
     border-color: white;
+}
+@media screen and (max-width: 500px) {
+    .content .card {
+        width: 100%;
+    }
+    .buttonStyle {
+        display: none !important;
+    }
+    .containerLogo {
+        margin-top: -2rem;
+    }
+    .header {
+        padding-top: 3rem;
+    }
+    .content {
+        height: auto;
+    }
 }
 </style>
 

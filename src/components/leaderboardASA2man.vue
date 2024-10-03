@@ -75,37 +75,41 @@
             class="content"
             :style="{ padding: '20px 50px', marginTop: '80px' }"
         >
-            <h1>Leaderboard</h1>
+            <img class="backgroundLeader" :src="background" alt="" />
+            <div class="imgContent">
+                <a-tabs class="datatable" v-model:activeKey="activeKey">
+                    <a-tab-pane key="1" tab="Tributs">
+                        <img class="leaderBoard" :src="leaderBoard" alt="" />
 
-            <a-tabs class="datatable" v-model:activeKey="activeKey">
-                <a-tab-pane key="1" tab="Tributs">
-                    <a-input
-                        class="inputSearchTribut"
-                        v-model:value="search"
-                        placeholder="Recherche tribut" />
-                    <a-table
-                        class="datatable"
-                        :columns="columnsTribut"
-                        :data-source="tribeData"
-                        @change="onChange"
-                    ></a-table
-                ></a-tab-pane>
-                <a-tab-pane key="2" tab="Players" force-render>
-                    <a-input
-                        class="inputSearch"
-                        v-model:value="searchPlayer"
-                        placeholder="Recherche Joueur"
-                    />
-                    <a-table
-                        class="datatable"
-                        :columns="
-                            myBoolean ? columnsPlayerAdmin : columnsPlayer
-                        "
-                        :data-source="searchPlayers"
-                        @change="onChange"
-                    ></a-table>
-                </a-tab-pane>
-            </a-tabs>
+                        <a-input
+                            class="inputSearch"
+                            v-model:value="search"
+                            placeholder="Recherche tribu" />
+                        <a-table
+                            class="datatable"
+                            :columns="columnsTribut"
+                            :data-source="tribeData"
+                            @change="onChange"
+                        ></a-table
+                    ></a-tab-pane>
+                    <a-tab-pane key="2" tab="Players" force-render>
+                        <img class="leaderBoardPlayer" :src="stats" alt="" />
+
+                        <a-input
+                            class="inputSearchPlayer"
+                            v-model:value="searchPlayer"
+                            placeholder="Recherche Joueur" />
+                        <a-table
+                            class="datatable"
+                            :columns="
+                                myBoolean ? columnsPlayerAdmin : columnsPlayer
+                            "
+                            :data-source="searchPlayers"
+                            @change="onChange"
+                        ></a-table
+                    ></a-tab-pane>
+                </a-tabs>
+            </div>
         </a-layout-content>
     </a-layout>
 </template>
@@ -127,6 +131,10 @@ import {
     LaptopOutlined,
     NotificationOutlined,
 } from "@ant-design/icons-vue";
+import leaderBoard from "../assets/leaderBoard.png";
+import stats from "../assets/stats.png";
+import background from "../assets/backgroundLeaderboard.svg";
+
 const selectedKeys1 = ref<string[]>(["2"]);
 const selectedKeys2 = ref<string[]>(["1"]);
 const openKeys = ref<string[]>(["sub1"]);
@@ -161,7 +169,7 @@ const fetchPlayerStats = async () => {
         });
         playerStats.value = players;
 
-        tribeArray.value = players.reduce((acc, player) => {
+        const tribeData = players.reduce((acc, player) => {
             if (player.TribeName === "") {
                 return acc;
             }
@@ -169,7 +177,7 @@ const fetchPlayerStats = async () => {
 
             if (!tribe) {
                 tribe = {
-                    id: acc.length + 1,
+                    id: 0, // Placeholder, will be set later
                     tribeName: player.TribeName,
                     tribePlayers: [],
                     tribeDamage: 0,
@@ -178,13 +186,21 @@ const fetchPlayerStats = async () => {
             }
 
             tribe.tribePlayers.push(` ${player.Name} `);
-
             tribe.tribeDamage += player.PlayerDamage;
 
             return acc;
         }, []);
 
-        tribeArray.value.sort((a, b) => b.tribeDamage - a.tribeDamage);
+        // Trier les tribus par score de dégâts en ordre décroissant
+        tribeData.sort((a, b) => b.tribeDamage - a.tribeDamage);
+
+        // Assigner les rangs après le tri
+        tribeArray.value = tribeData.map((tribe, index) => {
+            return {
+                ...tribe,
+                id: index + 1, // Assigner les rangs ici
+            };
+        });
     } catch (error) {
         console.error(
             "Erreur lors de la récupération des statistiques des joueurs :",
@@ -231,14 +247,6 @@ const columnsTribut = [
         },
     },
     {
-        title: "Tribe Players",
-        dataIndex: "tribePlayers",
-        sorter: {
-            compare: (a, b) => a.tribePlayers - b.tribePlayers,
-            multiple: 2,
-        },
-    },
-    {
         title: "Damage Score",
         dataIndex: "tribeDamage",
         sorter: {
@@ -262,14 +270,7 @@ const columnsPlayer = [
             multiple: 2,
         },
     },
-    {
-        title: "Player Damage ",
-        dataIndex: "PlayerDamage",
-        sorter: {
-            compare: (a, b) => a.PlayerDamage.length - b.PlayerDamage.length,
-            multiple: 2,
-        },
-    },
+
     {
         title: "Player Tribe",
         dataIndex: "TribeName",
@@ -405,14 +406,50 @@ onBeforeUnmount(() => {
 </script>
 <style lang="scss" scoped>
 @import "../assets/variables/variables.scss";
-
+.imgContent {
+    position: relative;
+    top: 50%;
+    width: 1920px;
+    height: 1080px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.leaderBoard {
+    width: 1520px;
+    height: 880px;
+    position: absolute;
+    transform: translate(2%, 10%);
+    top: -270px;
+    z-index: -1;
+}
+.leaderBoardPlayer {
+    width: 1520px;
+    height: 845px;
+    position: absolute;
+    transform: translate(2%, 10%);
+    top: -230px;
+    z-index: -1;
+}
+.backgroundLeader {
+    width: 100%;
+    object-fit: cover;
+    height: 100vh;
+    left: 0;
+    position: absolute;
+    top: 0px;
+}
 .logo {
     width: 60px;
     height: 60px;
     object-fit: content;
 }
 .datatable {
-    width: 100%;
+    width: 82.5%;
+    margin: 0 auto;
+    height: 71vh;
 }
 
 h1 {
@@ -425,21 +462,50 @@ h1 {
         :disabled
     ):hover {
     color: white;
-    border-color: white;
+    border-color: transparent;
+}
+:where(.css-16pw25h).ant-btn-default:not(:disabled):hover {
+    color: white;
+    border-color: transparent;
 }
 .inputSearch {
-    width: 20%;
+    width: 11.5%;
     position: absolute;
-    right: 0;
-    top: 120px;
-    margin-right: 3rem;
+    right: 123px;
+    top: -99px;
 }
-.inputSearchTribut {
-    width: 20%;
+.inputSearchPlayer {
+    width: 11.5%;
     position: absolute;
-    right: 0;
-    top: -51px;
-    margin-right: 3rem;
+    right: 171px;
+    top: -93px;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th,
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-tbody
+    > tr
+    > td,
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper tfoot > tr > th,
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    tfoot
+    > tr
+    > td {
+    padding: 14.7px 16px !important;
+    font-size: 20px !important;
+}
+:where(.css-16pw25h).ant-table-wrapper .ant-table-thead > tr > th,
+:where(.css-16pw25h).ant-table-wrapper .ant-table-tbody > tr > td,
+:where(.css-16pw25h).ant-table-wrapper tfoot > tr > th,
+:where(.css-16pw25h).ant-table-wrapper tfoot > tr > td {
+    padding: 14.7px 16px !important;
+    font-size: 20px !important;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-pagination.ant-pagination {
+    margin-top: 59px;
 }
 .header {
     display: flex;
@@ -475,14 +541,14 @@ h1 {
     opacity: 0.7;
 }
 .site-layout-background {
-    background: #fff;
+    background: transparent;
 }
 .height {
     height: 100% !important;
 }
 .content {
     margin-top: 1rem;
-    background: $bg;
+    position: relative;
 }
 .button {
     color: black !important;
@@ -512,21 +578,68 @@ h1 {
 tr {
     background: $color-side;
     color: white;
+    font-size: 20px !important;
+    padding: 14.7px 13px !important;
+    color: black !important;
+    height: auto !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
     &:nth-child(1) {
-        background: #077869 !important;
+        background: transparent !important;
     }
     &:nth-child(2) {
-        background: #077869b2 !important;
+        background: transparent !important;
     }
     &:nth-child(3) {
-        background: #07786965 !important;
+        background: transparent !important;
     }
     &:nth-child(odd) {
-        background: $color-titre-avatar;
+        background: transparent !important;
     }
 }
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before,
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > td:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before {
+    display: none !important;
+}
+:where(.css-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before,
+:where(.css-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > td:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before {
+    display: none !important;
+}
 :where(.css-16pw25h) a {
-    color: black !important;
+    color: white !important;
+}
+@media screen and (max-width: 500px) {
+    .buttonStyle {
+        display: none !important;
+    }
+    .containerLogo {
+        margin-top: -2rem;
+    }
+    .header {
+        padding-top: 3rem;
+    }
 }
 </style>
 

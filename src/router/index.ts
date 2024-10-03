@@ -26,6 +26,38 @@ const routes: RouteRecordRaw[] = [
     },
 
     {
+        path: "/selectServerASA",
+        name: "selectServerASA",
+        component: () => import("../views/selectShopASA.vue"),
+    },
+
+    {
+        path: "/selectServerASE",
+        name: "selectServerASE",
+        component: () => import("../views/selectServerASE.vue"),
+    },
+    {
+        path: "/4manASE",
+        name: "4manASE",
+        component: () => import("../views/shop4manASE.vue"),
+    },
+    {
+        path: "/noWipeASA",
+        name: "noWipeASA",
+        component: () => import("../views/shopNoWipeASA.vue"),
+    },
+    {
+        path: "/4manASA",
+        name: "4manASA",
+        component: () => import("../views/shop4manASA.vue"),
+    },
+    {
+        path: "/2manASE",
+        name: "2manASE",
+        component: () => import("../views/shop2manASE.vue"),
+    },
+
+    {
         path: "/success/:session_id",
         name: "success",
         component: () => import("../views/success.vue"),
@@ -40,6 +72,11 @@ const routes: RouteRecordRaw[] = [
         path: "/leaderboardASA",
         name: "leaderboardASA",
         component: () => import("../views/leaderboardASA.vue"),
+    },
+    {
+        path: "/leaderboardASANoWipe",
+        name: "leaderboardASANoWipe",
+        component: () => import("../views/leaderboardASANoWipe.vue"),
     },
     {
         path: "/leaderboardASA2man",

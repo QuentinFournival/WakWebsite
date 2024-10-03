@@ -57,22 +57,20 @@
                     v-if="selectedCategory === '4 man (ASE)'"
                 >
                     <h1>Leaderboard</h1>
-                       
-                            <a-input
-                                class="inputSearch"
-                                v-model:value="searchPlayer"
-                                placeholder="Recherche Joueur" />
-                            <a-table
-                                class="datatable"
-                                :columns="
-                                    myBoolean
-                                        ? columnsPlayerAdmin
-                                        : columnsPlayer
-                                "
-                                :data-source="searchPlayers"
-                                @change="onChange"
-                            ></a-table>
-                     
+
+                    <a-input
+                        class="inputSearch"
+                        v-model:value="searchPlayer"
+                        placeholder="Recherche Joueur"
+                    />
+                    <a-table
+                        class="datatable"
+                        :columns="
+                            myBoolean ? columnsPlayerAdmin : columnsPlayer
+                        "
+                        :data-source="searchPlayers"
+                        @change="onChange"
+                    ></a-table>
                 </div>
                 <div v-if="selectedCategory === '2 man (ASE)'">2 man ase</div>
                 <div v-if="selectedCategory === '2 man (ASA)'">2 man asA</div>
@@ -414,7 +412,7 @@ const handleTabChange = (key) => {
     margin: 10px;
     width: 22%;
 }
-:where(.css-dev-only-do-not-override-16pw25h).ant-menu-light {
+:where(.css-16pw25h).ant-menu-light {
     background: transparent;
 }
 .badge {
@@ -423,7 +421,7 @@ const handleTabChange = (key) => {
     top: 50%;
     transform: translate(-50%, -50%);
 }
-:where(.css-dev-only-do-not-override-16pw25h).ant-btn-primary {
+:where(.css-16pw25h).ant-btn-primary {
     background-color: #0b965d !important;
 }
 :where(.css-16pw25h).ant-btn-primary {
@@ -467,7 +465,7 @@ const handleTabChange = (key) => {
 }
 
 @media screen and (max-width: 800px) {
-    :where(.css-dev-only-do-not-override-16pw25h).ant-tabs
+    :where(.css-16pw25h).ant-tabs
         .ant-tabs-tab.ant-tabs-tab-active
         .ant-tabs-tab-btn {
         color: black !important;

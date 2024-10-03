@@ -77,10 +77,10 @@
         >
             <img class="backgroundLeader" :src="background" alt="" />
             <div class="imgContent">
-                <img class="leaderBoard" :src="leaderBoard" alt="" />
-
                 <a-tabs class="datatable" v-model:activeKey="activeKey">
-                    <a-tab-pane key="1" tab="Tributs">
+                    <a-tab-pane class="tab" key="1" tab="Tributs">
+                        <img class="leaderBoard" :src="leaderBoard" alt="" />
+
                         <a-input
                             class="inputSearch"
                             v-model:value="search"
@@ -92,9 +92,11 @@
                             @change="onChange"
                         ></a-table
                     ></a-tab-pane>
-                    <a-tab-pane key="2" tab="Players" force-render>
+                    <a-tab-pane class="tab" key="2" tab="Players" force-render>
+                        <img class="leaderBoardPlayer" :src="stats" alt="" />
+
                         <a-input
-                            class="inputSearch"
+                            class="inputSearchPlayer"
                             v-model:value="searchPlayer"
                             placeholder="Recherche Joueur" />
                         <a-table
@@ -125,6 +127,7 @@ import { CopyOutlined } from "@ant-design/icons-vue";
 import router from "../router/index";
 import axios from "axios";
 import leaderBoard from "../assets/leaderBoard.png";
+import stats from "../assets/stats.png";
 import background from "../assets/backgroundLeaderboard.svg";
 
 import {
@@ -410,11 +413,21 @@ onBeforeUnmount(() => {
     width: 1520px;
     height: 880px;
     position: absolute;
-    transform: translate(0%, 10%);
-    top: 0px;
+    transform: translate(2%, 10%);
+    top: -270px;
+    z-index: -1;
+}
+.leaderBoardPlayer {
+    width: 1520px;
+    height: 845px;
+    position: absolute;
+    transform: translate(2%, 10%);
+    top: -230px;
+    z-index: -1;
 }
 .backgroundLeader {
     width: 100%;
+    object-fit: cover;
     height: 100vh;
     left: 0;
     position: absolute;
@@ -428,6 +441,7 @@ onBeforeUnmount(() => {
 .datatable {
     width: 82.5%;
     margin: 0 auto;
+    height: 71vh;
 }
 
 h1 {
@@ -442,12 +456,42 @@ h1 {
     color: white;
     border-color: transparent;
 }
-
+:where(.css-16pw25h).ant-btn-default:not(:disabled):hover {
+    color: white;
+    border-color: transparent;
+}
 .inputSearch {
-    width: 20%;
+    width: 11.5%;
     position: absolute;
-    right: 0;
-    top: -50px;
+    right: 123px;
+    top: -99px;
+}
+.inputSearchPlayer {
+    width: 11.5%;
+    position: absolute;
+    right: 171px;
+    top: -93px;
+}
+:where(.css-16pw25h).ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap,
+:where(.css-16pw25h).ant-tabs > div > .ant-tabs-nav .ant-tabs-nav-wrap {
+    position: relative !important;
+
+    display: flex !important;
+    flex: auto !important;
+    align-self: stretch !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    transform: translate(0) !important;
+    top: -80px !important;
+    left: 127px !important;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-tabs .ant-tabs-tab {
+    font-size: 1.5rem !important;
+    font-family: "Anton SC", sans-serif !important;
+    font-weight: 400;
+    font-style: normal;
+    text-transform: capitalize;
+    z-index: 1000000;
 }
 :where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
     .ant-table-thead
@@ -465,6 +509,18 @@ h1 {
     padding: 14.7px 16px !important;
     font-size: 20px !important;
 }
+:where(.css-16pw25h).ant-table-wrapper .ant-table-thead > tr > th,
+:where(.css-16pw25h).ant-table-wrapper .ant-table-tbody > tr > td,
+:where(.css-16pw25h).ant-table-wrapper tfoot > tr > th,
+:where(.css-16pw25h).ant-table-wrapper tfoot > tr > td {
+    padding: 14.7px 16px !important;
+    font-size: 20px !important;
+}
+:where(.css-dev-only-do-not-override-16pw25h).ant-table-wrapper
+    .ant-table-pagination.ant-pagination {
+    margin-top: 59px;
+}
+
 .header {
     display: flex;
     flex-wrap: wrap;
@@ -571,8 +627,33 @@ tr {
     ):not([colspan])::before {
     display: none !important;
 }
+:where(.css-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before,
+:where(.css-16pw25h).ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > td:not(:last-child):not(.ant-table-selection-column):not(
+        .ant-table-row-expand-icon-cell
+    ):not([colspan])::before {
+    display: none !important;
+}
 :where(.css-16pw25h) a {
-    color: black !important;
+    color: white !important;
+}
+@media screen and (max-width: 500px) {
+    .buttonStyle {
+        display: none !important;
+    }
+    .containerLogo {
+        margin-top: -2rem;
+    }
+    .header {
+        padding-top: 3rem;
+    }
 }
 </style>
 

@@ -185,17 +185,15 @@ h1 {
     width: 20%;
 }
 
-:where(.css-dev-only-do-not-override-16pw25h).ant-btn-default {
+:where(.css-16pw25h).ant-btn-default {
     background: transparent !important;
     color: white;
 }
 
-:where(.css-dev-only-do-not-override-16pw25h) a {
+:where(.css-16pw25h) a {
     color: black !important;
 }
-:where(.css-dev-only-do-not-override-16pw25h).ant-btn-default:not(
-        :disabled
-    ):hover {
+:where(.css-16pw25h).ant-btn-default:not(:disabled):hover {
     color: white;
     border-color: white;
 }
